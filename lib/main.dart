@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import for formatting time
 
@@ -44,62 +43,37 @@ class _AlarmScreenState extends State<AlarmScreen> {
         backgroundColor: Colors.black,
         title: Row(
           children: [
-            // "Alarms" is LOCKED to the left
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Alarms',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
+            Text(
+              'Alarms',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
             ),
-            SizedBox(width: 10), // Small space to separate from time
-
-            // Live Time Expands & Stays Centered
-            Expanded(
-              child: StreamBuilder<DateTime>(
-                stream: Stream.periodic(
-                  Duration(seconds: 1),
-                  (_) => DateTime.now(),
-                ),
-                builder: (context, snapshot) {
-                  String timeText = snapshot.hasData
-                      ? DateFormat('hh:mm:ss a').format(snapshot.data!)
-                      : "Loading...";
-                  return Center(
-                    child: Text(
-                      timeText,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  );
-                },
-              ),
+            Spacer(), // Align time to the right
+            StreamBuilder<DateTime>(
+              stream: Stream.periodic(Duration(seconds: 1), (_) => DateTime.now()),
+              builder: (context, snapshot) {
+                String timeText = snapshot.hasData ? DateFormat('hh:mm:ss a').format(snapshot.data!) : "Loading...";
+                return Text(
+                  timeText,
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                );
+              },
             ),
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: FloatingActionButton(
-              onPressed: () => setState(() => alarmTimes.add('2:00 PM')),
-              backgroundColor: Colors.orange,
-              child: Icon(Icons.add, size: 28),
-              mini: true,
-            ),
+          IconButton(
+            icon: Icon(Icons.add, color: Colors.white),
+            onPressed: () {
+              setState(() {
+                alarmTimes.add('2:00 PM'); // Add a new alarm time
+              });
+            },
           ),
         ],
       ),
       body: Container(
         color: Colors.black,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Divider(color: Colors.white24),
             Padding(
@@ -121,20 +95,19 @@ class _AlarmScreenState extends State<AlarmScreen> {
               child: ListView.builder(
                 itemCount: alarmTimes.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: GestureDetector(
-                          onTap: () => _editTime(index),
+                  return GestureDetector(
+                    onTap: () => _editTime(index),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(alarmTimes[index],
-                                      style: TextStyle(color: Colors.white, fontSize: 24)),
+                                  Text(alarmTimes[index], style: TextStyle(color: Colors.white, fontSize: 24)),
                                   Text('Alarm', style: TextStyle(color: Colors.white70)),
                                 ],
                               ),
@@ -146,9 +119,9 @@ class _AlarmScreenState extends State<AlarmScreen> {
                             ],
                           ),
                         ),
-                      ),
-                      Divider(color: Colors.white24),
-                    ],
+                        Divider(color: Colors.white24),
+                      ],
+                    ),
                   );
                 },
               ),
